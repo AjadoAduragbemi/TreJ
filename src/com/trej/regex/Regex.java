@@ -1,8 +1,8 @@
 package com.trej.regex;
 
 /**
- * description of class
- * 
+ * A Regex class that provides approximate pattern matching by accessing native funtions
+ * defined by TRE
  *
  * @author Aduragbemi Joseph
  * @version 1.0.0
