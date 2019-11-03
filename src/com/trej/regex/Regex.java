@@ -43,11 +43,6 @@ public class Regex implements java.io.Serializable {
 
     private String input;
 
-    /**
-     *
-     * @param pattern
-     * @param cflags
-     */
     private Regex(String pattern, int cflags) {
         this.pattern = pattern;
         this.cflags = cflags;
@@ -83,8 +78,9 @@ public class Regex implements java.io.Serializable {
 
     /**
      *
-     * @param input
-     * @throws RegexException
+     * @param input String to match against regex pattern
+     * @throws RegexException if object has been initialized with an invalid regex
+     *                        pattern
      */
     public MatchResult match(String input) throws RegexException {
         this.input = input;
@@ -93,9 +89,9 @@ public class Regex implements java.io.Serializable {
 
     /**
      *
-     * @param regex
-     * @param input
-     * @throws RegexException
+     * @param regex The expression to be compiled.
+     * @param input String to match against regex pattern
+     * @throws RegexException if regex pattern is invalid
      */
     public static MatchResult match(String regex, String input) throws RegexException {
         return Regex.compile(regex).match(input);
@@ -103,10 +99,12 @@ public class Regex implements java.io.Serializable {
 
     /**
      *
-     * @param regex
-     * @param input
-     * @param cflags
-     * @throws RegexException
+     * @param regex  The expression to be compiled.
+     * @param input  String to match against regex pattern
+     * @param cflags Compile flags, a bit mask that may include [REG_ICASE,
+     *               REG_NEWLINE, REG_NOSUB, REG_LITERAL, REG_RIGHT_ASSOC,
+     *               REG_UNGREEDY].
+     * @throws RegexException if regex pattern is invalid
      */
     public static MatchResult match(String regex, String input, int cflags) throws RegexException {
         return Regex.compile(regex, cflags).match(input);
@@ -134,7 +132,7 @@ public class Regex implements java.io.Serializable {
     }
 
     /**
-     *
+     * @return String return the errorMessage
      */
     public String getInput() {
         return input;
