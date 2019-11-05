@@ -17,6 +17,24 @@
 INT typeof(const char* p) { return IS_CHAR; }
 INT typeof(const wchar_t* p) { return IS_WCHAR; }
 
+void setUpMatchResult(trej_result_t* p_trej_match, regmatch_t* pmatch, size_t nmatch, size_t maxlen) {
+	if(p_trej_match != nullptr) {
+
+		p_trej_match->nmatch = 0;
+		p_trej_match->matchArray = new trej_match_t[nmatch];
+
+		for(int i = 0; i < nmatch; i++) {
+			regmatch_t* match = &pmatch[i];
+			if(match->rm_so < 0 || match->rm_so >= maxlen || match->rm_eo <= 0 || match->rm_eo > maxlen) {
+				break;
+			}
+			p_trej_match->matchArray[i].start_offset = match->rm_so;
+			p_trej_match->matchArray[i].end_offset = match->rm_eo;
+			p_trej_match->nmatch++;
+		}
+	}
+}
+
 int matchNotApprox(const regex_t& preg, const char* string, size_t len, trej_result_t* p_trej_match, int eflags) {
 	size_t nmatch = preg.re_nsub + 1;
 	regmatch_t* pmatch = new regmatch_t[nmatch];
@@ -29,21 +47,7 @@ int matchNotApprox(const regex_t& preg, const char* string, size_t len, trej_res
 		len = strnlen_s(string, 1024);
 	}
 
-	if(p_trej_match != nullptr) {
-
-		p_trej_match->nmatch = 0;
-		p_trej_match->matchArray = new trej_match_t[nmatch];
-
-		for(int i = 0; i < nmatch; i++) {
-			regmatch_t* match = &pmatch[i];
-			if(match->rm_so < 0 || match->rm_so >= len || match->rm_eo <= 0 || match->rm_eo > len) {
-				break;
-			}
-			p_trej_match->matchArray[i].start_offset = match->rm_so;
-			p_trej_match->matchArray[i].end_offset = match->rm_eo;
-			p_trej_match->nmatch++;
-		}
-	}
+	setUpMatchResult(p_trej_match, pmatch, nmatch, len);
 
 	delete[] pmatch;
 	pmatch = nullptr;	// doesn't do no harm
@@ -67,23 +71,11 @@ int matchApprox(const regex_t& preg, const char* string, size_t len, trej_result
 		error_value = tre_regaexec(&preg, string, p_amatch, aparams, eflags);
 	}
 
-	if(p_trej_match != nullptr) {
+	setUpMatchResult(p_trej_match, p_amatch->pmatch, nmatch, len);
 
-		p_trej_match->nmatch = 0;
-		p_trej_match->matchArray = new trej_match_t[nmatch];
-
-		for(int i = 0; i < nmatch; i++) {
-			regmatch_t* match = &p_amatch->pmatch[i];
-			if(match->rm_so < 0 || match->rm_so >= len || match->rm_eo <= 0 || match->rm_eo > len) {
-				break;
-			}
-			p_trej_match->matchArray[i].start_offset = match->rm_so;
-			p_trej_match->matchArray[i].end_offset = match->rm_eo;
-			p_trej_match->nmatch++;
-		}
-	}
-
-	delete[] p_amatch;
+	delete[] p_amatch->pmatch;
+	delete p_amatch;
+	p_amatch->pmatch = nullptr;
 	p_amatch = nullptr;	// doesn't do no harm
 
 	return error_value;

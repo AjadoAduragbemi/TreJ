@@ -6,8 +6,9 @@
 
 jobject trej_regex_match(JNIEnv *env, jobject object) {
 
-	env->MonitorEnter(object);
+	jobject match_result = nullptr;
 
+	env->MonitorEnter(object);
 	jclass regex_class = env->GetObjectClass(object);
 	jclass result_class = env->FindClass("Lcom/trej/regex/MatchResult;");
 	jclass match_class = env->FindClass("Lcom/trej/regex/Match;");
@@ -34,17 +35,16 @@ jobject trej_regex_match(JNIEnv *env, jobject object) {
 			(pattern = static_cast<jstring>(env->GetObjectField(object, pattern_id))) && 
 			(input = static_cast<jstring>(env->GetObjectField(object, input_id))) ) {
 
-				const char *regex = env->GetStringUTFChars(pattern, 0);
-				const char *string = env->GetStringUTFChars(input, 0);
+				auto regex = env->GetStringUTFChars(pattern, nullptr);
+				auto string = env->GetStringUTFChars(input, nullptr);
 
-				jint trej_error_value = trejMatch(regex, string, trej_match, cflags);
+				jint trej_error_value = trejMatch(regex, string, trej_match, cflags, REG_NOTBOL);
 
 				env->ReleaseStringUTFChars(pattern, regex);
 				env->ReleaseStringUTFChars(input, string);
 
 				env->SetIntField(object, error_value_id, trej_error_value);
 				env->SetObjectField(object, error_message_id, env->NewStringUTF(trej_match->error_message));
-
 				if(trej_error_value >= REG_OK && trej_error_value <= REG_NOMATCH) {
 
 					jsize len = static_cast<jsize>(trej_match->nmatch);
@@ -56,9 +56,8 @@ jobject trej_regex_match(JNIEnv *env, jobject object) {
 						env->SetObjectArrayElement(match_array, index, match_object);
 					}
 
-					jobject match_result = make_match_result(env, result_class, object, match_array);
+					match_result = make_match_result(env, result_class, object, match_array);
 
-					return match_result;
 				} else {
 
 				}
@@ -68,7 +67,8 @@ jobject trej_regex_match(JNIEnv *env, jobject object) {
 	delete trej_match;
 
 	env->MonitorExit(object);
-	return nullptr;
+
+	return match_result;
 }
 
 jobject make_match(JNIEnv *env, jclass match_class, jint start_offset, jint end_offset) {
