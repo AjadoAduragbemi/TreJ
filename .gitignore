@@ -1,3 +1,4 @@
+.vscode/*
 *.class
 hs_err_pid*.log
 .vscode/launch.json
@@ -25,3 +26,6 @@ jni/win32/trej/x64/Release/trej.obj
 jni/win32/trej/x64/Release/trej.pch
 jni/win32/trej/x64/Release/trej.write.1.tlog
 jni/win32/trej/x64/Release/vc110.pdb
+jni/win32/trej.v11.suo
+jni/win32/trej.v11.suo
+jni/win32/trej.opensdf

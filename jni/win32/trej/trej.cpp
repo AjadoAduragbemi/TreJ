@@ -92,6 +92,7 @@ TREJ_API int trejMatch(const char* pattern, const char* string, trej_result_t* p
 				error_value = matchApprox(preg, string, 0, p_trej_match, eflags);
 			}
 		}
+		p_trej_match->error_message = new char[MAXBYTE];
 		tre_regerror(error_value, &preg, p_trej_match->error_message, MAXBYTE);
 		tre_regfree(&preg);
 		return error_value;
@@ -110,7 +111,8 @@ TREJ_API int trejnMatch(const char* pattern, const char* string, size_t len, tre
 				error_value = matchApprox(preg, string, len, p_trej_match, eflags);
 			}
 		}
-
+		
+		p_trej_match->error_message = new char[MAXBYTE];
 		tre_regerror(error_value, &preg, p_trej_match->error_message, MAXBYTE);
 		tre_regfree(&preg);
 		return error_value;
