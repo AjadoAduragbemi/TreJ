@@ -15,13 +15,14 @@ public class Main {
         }
 
         try {
-            Regex regex = com.trej.regex.Regex.compile("(test)([a-z]+)\\d{3}$", Regex.REG_ICASE);
+            Regex regex = Regex.compile("(test)([a-z]+)\\d{3}$", Regex.REG_ICASE);
             MatchResult result = regex.exec("teststRing123");
             if(result != null) {
                 System.out.println(result.groups());
                 System.out.println(result.group(1));
             }
             regex.free();
+            Regex.exec("(test)([a-z]+)\\d{3}$", "teststring123");
         } catch(RegexException ex) {
             ex.printStackTrace();
         }

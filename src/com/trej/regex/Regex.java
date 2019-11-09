@@ -60,25 +60,25 @@ public class Regex implements java.io.Serializable {
 
     /**
      *
-     * @param regex The regular expression pattern to be compiled.
+     * @param pattern The regular expression pattern to be compiled.
      * @throws RegexException if object has been initialized with an invalid regex
      *                        pattern
      */
-    public static Regex compile(String regex) throws RegexException {
-        return compile(regex, 0);
+    public static Regex compile(String pattern) throws RegexException {
+        return compile(pattern, 0);
     }
 
     /**
      *
-     * @param regex The regular expression pattern to be compiled.
+     * @param pattern The regular expression pattern to be compiled.
      * @param cflags Compile flags, a bit mask that may include [REG_ICASE,
      *               REG_NEWLINE, REG_NOSUB, REG_LITERAL, REG_RIGHT_ASSOC,
      *               REG_UNGREEDY].
      * @throws RegexException if object has been initialized with an invalid regex
      *                        pattern
      */
-    public static Regex compile(String regex, int cflags) throws RegexException {
-        return new Regex(regex, REG_EXTENDED | cflags);
+    public static Regex compile(String pattern, int cflags) throws RegexException {
+        return new Regex(pattern, REG_EXTENDED | cflags);
     }
 
     private native MatchResult exec();
@@ -94,25 +94,28 @@ public class Regex implements java.io.Serializable {
 
     /**
      *
-     * @param regex The expression to be compiled.
+     * @param pattern The expression to be compiled.
      * @param input String to match against regex pattern
      * @throws RegexException if regex pattern is invalid
      */
-    public static MatchResult exec(String regex, String input) throws RegexException {
-        return Regex.compile(regex).exec(input);
+    public static MatchResult exec(String pattern, String input) throws RegexException {
+        return exec(pattern, input, 0);
     }
 
     /**
      *
-     * @param regex  The expression to be compiled.
+     * @param pattern  The expression to be compiled.
      * @param input  String to match against regex pattern
      * @param cflags Compile flags, a bit mask that may include [REG_ICASE,
      *               REG_NEWLINE, REG_NOSUB, REG_LITERAL, REG_RIGHT_ASSOC,
      *               REG_UNGREEDY].
      * @throws RegexException if regex pattern is invalid
      */
-    public static MatchResult exec(String regex, String input, int cflags) throws RegexException {
-        return Regex.compile(regex, cflags).exec(input);
+    public static MatchResult exec(String pattern, String input, int cflags) throws RegexException {
+        Regex regex = Regex.compile(pattern, cflags);
+        MatchResult result = regex.exec(input);
+        regex.free();
+        return result;
     }
 
     /**
