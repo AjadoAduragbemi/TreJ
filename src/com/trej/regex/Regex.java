@@ -143,6 +143,8 @@ public class Regex implements java.io.Serializable {
         return input;
     }
 
+    public native void free();
+
     static {
         System.loadLibrary("trej");
     }

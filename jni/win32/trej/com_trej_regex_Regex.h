@@ -41,6 +41,14 @@ JNIEXPORT jint JNICALL Java_com_trej_regex_Regex_compile
 JNIEXPORT jobject JNICALL Java_com_trej_regex_Regex_exec
   (JNIEnv *, jobject);
 
+/*
+ * Class:     com_trej_regex_Regex
+ * Method:    free
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_trej_regex_Regex_free
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

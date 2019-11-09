@@ -21,6 +21,7 @@ public class Main {
                 System.out.println(result.groups());
                 System.out.println(result.group(1));
             }
+            regex.free();
         } catch(RegexException ex) {
             ex.printStackTrace();
         }
