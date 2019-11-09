@@ -1,4 +1,6 @@
 
+#include "tre/tre.h"
+
 #ifdef TREJ_EXPORTS
 #define TREJ_API __declspec(dllexport)
 #else
@@ -21,6 +23,9 @@ typedef struct {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+int matchNotApprox(const regex_t*, const char*, size_t, trej_result_t*, int);
+int matchApprox(const regex_t*, const char*, size_t, trej_result_t*, int);
 
 TREJ_API int trejMatch(const char*, const char*, trej_result_t*, int, int = 0);
 TREJ_API int trejnMatch(const char*, const char*, size_t, trej_result_t*, int, int = 0);

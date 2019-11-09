@@ -36,7 +36,10 @@
     <ClInclude Include="tre\tre.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="match.h">
+    <ClInclude Include="compile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,7 +56,10 @@
     <ClCompile Include="com_trej_regex_Regex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="match.cpp">
+    <ClCompile Include="compile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="exec.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

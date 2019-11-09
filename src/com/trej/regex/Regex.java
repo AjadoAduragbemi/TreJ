@@ -43,48 +43,53 @@ public class Regex implements java.io.Serializable {
 
     private String input;
 
-    private Regex(String pattern, int cflags) {
+    private long preg;
+
+    private Regex(String pattern, int cflags) throws RegexException {
         this.pattern = pattern;
         this.cflags = cflags;
+        this.preg = 0;
+
+        errorValue = compile();
+        if(errorValue != REG_OK) {
+            throw new RegexException(errorMessage);
+        }
     }
+
+    private native int compile();
 
     /**
      *
-     * @param regex The expression to be compiled.
+     * @param regex The regular expression pattern to be compiled.
+     * @throws RegexException if object has been initialized with an invalid regex
+     *                        pattern
      */
-    public static Regex compile(String regex) {
+    public static Regex compile(String regex) throws RegexException {
         return compile(regex, 0);
     }
 
     /**
      *
-     * @param regex  The expression to be compiled.
+     * @param regex The regular expression pattern to be compiled.
      * @param cflags Compile flags, a bit mask that may include [REG_ICASE,
      *               REG_NEWLINE, REG_NOSUB, REG_LITERAL, REG_RIGHT_ASSOC,
      *               REG_UNGREEDY].
+     * @throws RegexException if object has been initialized with an invalid regex
+     *                        pattern
      */
-    public static Regex compile(String regex, int cflags) {
+    public static Regex compile(String regex, int cflags) throws RegexException {
         return new Regex(regex, REG_EXTENDED | cflags);
     }
 
-    /**
-     * @return int return the cflags
-     */
-    public int getCflags() {
-        return cflags;
-    }
-
-    private native MatchResult match() throws RegexException;
+    private native MatchResult exec();
 
     /**
      *
      * @param input String to match against regex pattern
-     * @throws RegexException if object has been initialized with an invalid regex
-     *                        pattern
      */
-    public MatchResult match(String input) throws RegexException {
+    public MatchResult exec(String input) {
         this.input = input;
-        return match();
+        return exec();
     }
 
     /**
@@ -93,8 +98,8 @@ public class Regex implements java.io.Serializable {
      * @param input String to match against regex pattern
      * @throws RegexException if regex pattern is invalid
      */
-    public static MatchResult match(String regex, String input) throws RegexException {
-        return Regex.compile(regex).match(input);
+    public static MatchResult exec(String regex, String input) throws RegexException {
+        return Regex.compile(regex).exec(input);
     }
 
     /**
@@ -106,8 +111,8 @@ public class Regex implements java.io.Serializable {
      *               REG_UNGREEDY].
      * @throws RegexException if regex pattern is invalid
      */
-    public static MatchResult match(String regex, String input, int cflags) throws RegexException {
-        return Regex.compile(regex, cflags).match(input);
+    public static MatchResult exec(String regex, String input, int cflags) throws RegexException {
+        return Regex.compile(regex, cflags).exec(input);
     }
 
     /**

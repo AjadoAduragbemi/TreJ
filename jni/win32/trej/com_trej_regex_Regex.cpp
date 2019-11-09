@@ -1,9 +1,16 @@
 
 #include "stdafx.h"
 #include "com_trej_regex_Regex.h"
-#include "match.h"
+#include "compile.h"
+#include "exec.h"
 
-JNIEXPORT jobject JNICALL Java_com_trej_regex_Regex_match
+
+JNIEXPORT jint JNICALL Java_com_trej_regex_Regex_compile
 	(JNIEnv *env, jobject object) {
-		return trej_regex_match(env, object);
+		return trej_regex_compile(env, object);
+}
+
+JNIEXPORT jobject JNICALL Java_com_trej_regex_Regex_exec
+	(JNIEnv *env, jobject object) {
+		return trej_regex_exec(env, object);
 }

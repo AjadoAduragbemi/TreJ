@@ -152,7 +152,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="com_trej_regex_Regex.h" />
-    <ClInclude Include="match.h" />
+    <ClInclude Include="compile.h" />
+    <ClInclude Include="exec.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="trej.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="tre\tre.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="compile.cpp" />
     <ClCompile Include="com_trej_regex_Regex.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -175,7 +177,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="match.cpp" />
+    <ClCompile Include="exec.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

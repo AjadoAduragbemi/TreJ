@@ -27,10 +27,18 @@ extern "C" {
 #define com_trej_regex_Regex_REG_UNGREEDY 64L
 /*
  * Class:     com_trej_regex_Regex
- * Method:    match
+ * Method:    compile
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_trej_regex_Regex_compile
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_trej_regex_Regex
+ * Method:    exec
  * Signature: ()Lcom/trej/regex/MatchResult;
  */
-JNIEXPORT jobject JNICALL Java_com_trej_regex_Regex_match
+JNIEXPORT jobject JNICALL Java_com_trej_regex_Regex_exec
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

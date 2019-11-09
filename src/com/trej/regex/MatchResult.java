@@ -9,16 +9,10 @@ public class MatchResult {
     private final Match[] matchArray;
     private boolean approximate;
 
-    public MatchResult(Regex regex, Match[] matchArray) {
+    public MatchResult(Regex regex, Match[] matchArray, boolean approximate) {
         this.regexParent = regex;
         this.matchArray = matchArray;
-    }
-
-    /**
-     * @return Regex return the regexParent
-     */
-    public Regex getRegexParent() {
-        return regexParent;
+        this.approximate = approximate;
     }
 
     /**
