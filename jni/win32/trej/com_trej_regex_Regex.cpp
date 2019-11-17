@@ -19,6 +19,7 @@ JNIEXPORT jobject JNICALL Java_com_trej_regex_Regex_exec
 JNIEXPORT void JNICALL Java_com_trej_regex_Regex_free
 	(JNIEnv *env, jobject object) {
 
+		env->MonitorEnter(object);
 		jclass regex_class = env->GetObjectClass(object);
 		jfieldID preg_id;
 		regex_t *preg;
@@ -27,4 +28,6 @@ JNIEXPORT void JNICALL Java_com_trej_regex_Regex_free
 				tre_regfree(preg);
 				env->SetLongField(object, preg_id, 0);
 		}
+
+		env->MonitorExit(object);
 }

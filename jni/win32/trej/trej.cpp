@@ -71,6 +71,7 @@ int matchApprox(const regex_t* preg, const char* string, size_t len, trej_result
 		error_value = tre_reganexec(preg, string, len, p_amatch, aparams, eflags);
 	} else {
 		error_value = tre_regaexec(preg, string, p_amatch, aparams, eflags);
+		len = strnlen_s(string, 1024);
 	}
 
 	setUpMatchResult(p_trej_match, p_amatch->pmatch, nmatch, len);

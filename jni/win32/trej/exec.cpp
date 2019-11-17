@@ -34,7 +34,7 @@ jobject trej_regex_exec(JNIEnv *env, jobject object) {
 				auto string = env->GetStringUTFChars(input, nullptr);
 				jboolean isApproximate;
 
-				if((isApproximate = tre_have_approx(preg)) == FALSE) {
+				if((isApproximate = tre_have_approx(preg)) == JNI_FALSE) {
 					trej_error_value = matchNotApprox(preg, string, 0, trej_match, 0);
 				} else {
 					trej_error_value = matchApprox(preg, string, 0, trej_match, 0);
