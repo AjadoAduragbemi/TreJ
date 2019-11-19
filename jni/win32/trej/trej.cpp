@@ -79,6 +79,11 @@ int matchApprox(const regex_t* preg, const char* string, size_t len, trej_result
 	p_trej_match->error_message = new char[MAXBYTE];
 	tre_regerror(error_value, preg, p_trej_match->error_message, MAXBYTE);
 
+	p_trej_match->match_cost = p_amatch->cost;
+	p_trej_match->insert_count = p_amatch->num_ins;
+	p_trej_match->delete_count = p_amatch->num_del;
+	p_trej_match->substitution_count = p_amatch->num_subst;
+
 	delete[] p_amatch->pmatch;
 	p_amatch->pmatch = nullptr;
 	delete p_amatch;

@@ -58,6 +58,22 @@ jobject trej_regex_exec(JNIEnv *env, jobject object) {
 				trej_match->matchArray = nullptr;
 
 				match_result = make_match_result(env, result_class, object, match_array, isApproximate);
+
+				if(match_result != nullptr && isApproximate == JNI_TRUE) {
+					jfieldID match_cost_id = env->GetFieldID(result_class, "matchCost", "I");
+					jfieldID insert_count_id = env->GetFieldID(result_class, "insertCount", "I");
+					jfieldID delete_count_id = env->GetFieldID(result_class, "deleteCount", "I");
+					jfieldID substitution_count = env->GetFieldID(result_class, "substitutionCount", "I");
+					if(match_cost_id != nullptr && 
+						insert_count_id != nullptr && 
+						delete_count_id != nullptr && 
+						substitution_count != nullptr) {
+							env->SetIntField(match_result, match_cost_id, trej_match->match_cost);
+							env->SetIntField(match_result, insert_count_id, trej_match->insert_count);
+							env->SetIntField(match_result, delete_count_id, trej_match->delete_count);
+							env->SetIntField(match_result, substitution_count, trej_match->substitution_count);
+					}
+				}
 		}
 	}
 

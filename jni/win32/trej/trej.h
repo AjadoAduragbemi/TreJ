@@ -13,10 +13,16 @@ typedef struct {
 } trej_match_t;
 
 typedef struct {
-  bool is_approx;
   size_t nmatch;
   trej_match_t *matchArray;
   char* error_message;
+  bool is_approx;
+  /* approximate matching related*/
+  int match_cost;
+  int insert_count;
+  int delete_count;
+  int substitution_count;
+
 } trej_result_t;
 
 

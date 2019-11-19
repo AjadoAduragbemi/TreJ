@@ -14,6 +14,8 @@ public class MatchResult {
     private final Match[] matchArray;
     private boolean approximate;
 
+    private int matchCost, insertCount, deleteCount, substitutionCount;
+
     public MatchResult(Regex regex, Match[] matchArray, boolean approximate) {
         this.regexParent = regex;
         this.matchArray = matchArray;
@@ -60,7 +62,22 @@ public class MatchResult {
      * @return true if compiled expression is an approximate expression.
      */
     public boolean isApproximate() {
-        return approximate;
+        return this.approximate;
     }
 
+    public int getMatchCost() {
+        return this.matchCost;
+    }
+
+    public int getInsertCount() {
+        return this.insertCount;
+    }
+
+    public int getDeleteCount() {
+        return this.deleteCount;
+    }
+
+    public int getSubstitutionCount() {
+        return this.substitutionCount;
+    }
 }

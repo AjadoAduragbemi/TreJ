@@ -7,23 +7,37 @@ import com.trej.regex.RegexException;
 public class Main {
 
     public static void main(String[] args) {
+        MatchResult result;
         try {
             Regex regex = Regex.compile("^(test)([a-z]+)\\d{3}$", Regex.REG_ICASE);
-            MatchResult result = regex.exec("teststRing123");
-            if(result != null) {
-                System.out.println(result.groups());
-                System.out.println(result.group(1));
-                System.out.println(result.isApproximate());
-            }
+            result = regex.exec("teststRing123");
+            printResults(result);
             regex.free();
-            result = Regex.exec("{~2}(tast)([a-z]+)\\d{3}$", "tastString123");
-            if(result != null) {
-                System.out.println(result.groups());
-                System.out.println(result.group(1));
-                System.out.println(result.isApproximate());
-            }
         } catch(RegexException ex) {
             ex.printStackTrace();
+        }
+
+        try {
+            // an approximate match with 2 substitutions
+            // tast -> test
+            // String -> string
+            result = Regex.exec("{~2}(test)([a-z]+)\\d{3}$", "tastString123");
+            printResults(result);
+        } catch(RegexException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static void printResults(MatchResult result) {
+        if(result != null) {
+            System.out.println(result.groups());
+            if(result.isApproximate()) {
+                System.out.println("Approximate Match:");
+                System.out.println("    Match Cost: " + result.getMatchCost());
+                System.out.println("    Insert Count: " + result.getInsertCount());
+                System.out.println("    Delete Count: " + result.getDeleteCount());
+                System.out.println("    Substitution Count: " + result.getSubstitutionCount());
+            }
         }
     }
 }
