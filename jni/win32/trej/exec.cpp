@@ -24,11 +24,7 @@ jobject trej_regex_exec(JNIEnv *env, jobject object) {
 		jstring input;
 		regex_t* preg;
 
-		if( (preg_id != nullptr) &&
-			(input_id != nullptr) &&
-			(error_message_id != nullptr) &&
-			(error_value_id != nullptr) &&
-			(preg = reinterpret_cast<regex_t*>(env->GetLongField(object, preg_id))) != nullptr && 
+		if( (preg = reinterpret_cast<regex_t*>(env->GetLongField(object, preg_id))) != nullptr && 
 			(input = static_cast<jstring>(env->GetObjectField(object, input_id))) ) {
 				jint trej_error_value;
 				auto string = env->GetStringUTFChars(input, nullptr);
@@ -64,15 +60,11 @@ jobject trej_regex_exec(JNIEnv *env, jobject object) {
 					jfieldID insert_count_id = env->GetFieldID(result_class, "insertCount", "I");
 					jfieldID delete_count_id = env->GetFieldID(result_class, "deleteCount", "I");
 					jfieldID substitution_count = env->GetFieldID(result_class, "substitutionCount", "I");
-					if(match_cost_id != nullptr && 
-						insert_count_id != nullptr && 
-						delete_count_id != nullptr && 
-						substitution_count != nullptr) {
-							env->SetIntField(match_result, match_cost_id, trej_match->match_cost);
-							env->SetIntField(match_result, insert_count_id, trej_match->insert_count);
-							env->SetIntField(match_result, delete_count_id, trej_match->delete_count);
-							env->SetIntField(match_result, substitution_count, trej_match->substitution_count);
-					}
+
+					env->SetIntField(match_result, match_cost_id, trej_match->match_cost);
+					env->SetIntField(match_result, insert_count_id, trej_match->insert_count);
+					env->SetIntField(match_result, delete_count_id, trej_match->delete_count);
+					env->SetIntField(match_result, substitution_count, trej_match->substitution_count);
 				}
 		}
 	}
@@ -90,16 +82,13 @@ jobject make_match(JNIEnv *env, jclass match_class, jint start_offset, jint end_
 	jfieldID match_start_offset_id, match_end_offset_id;
 
 	if( (match_constructor = env->GetMethodID(match_class, "<init>", "()V")) &&
-		(match_object = env->NewObject(match_class, match_constructor)) &&
-		(match_start_offset_id = env->GetFieldID(match_class, "startOffset", "I")) &&
-		(match_end_offset_id = env->GetFieldID(match_class, "endOffset", "I")) ) {
-
+		(match_object = env->NewObject(match_class, match_constructor)) ) {
+			match_start_offset_id = env->GetFieldID(match_class, "startOffset", "I");
+			match_end_offset_id = env->GetFieldID(match_class, "endOffset", "I");
 			env->SetIntField(match_object, match_start_offset_id, start_offset);
 			env->SetIntField(match_object, match_end_offset_id, end_offset);
-
 			return match_object;
 	}
-
 	return nullptr;
 }
 

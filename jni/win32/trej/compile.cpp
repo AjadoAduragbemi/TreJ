@@ -14,7 +14,7 @@ jint trej_regex_compile(JNIEnv *env, jobject object) {
 	jstring pattern;
 	jint cflags;
 
-	if(regex_class != nullptr && pattern_id != nullptr && preg_id != nullptr &&
+	if(regex_class != nullptr &&
 		(cflags = env->GetIntField(object, cflags_id)) && 
 		(pattern = static_cast<jstring>(env->GetObjectField(object, pattern_id))) ) {
 			regex_t *preg = new regex_t;
