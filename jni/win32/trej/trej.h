@@ -25,13 +25,17 @@ typedef struct {
 
 } trej_result_t;
 
+#define TREJ_STR_MAX		1024
+#define TREJ_ERR_MSG_LEN	0Xff
+
+template<typename T>
+int matchNotApprox(const regex_t*, const T*, size_t, trej_result_t*, int);
+template<typename T>
+int matchApprox(const regex_t*, const T*, size_t, trej_result_t*, int);
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-int matchNotApprox(const regex_t*, const char*, size_t, trej_result_t*, int);
-int matchApprox(const regex_t*, const char*, size_t, trej_result_t*, int);
 
 TREJ_API int trejMatch(const char*, const char*, trej_result_t*, int, int = 0);
 TREJ_API int trejnMatch(const char*, const char*, size_t, trej_result_t*, int, int = 0);

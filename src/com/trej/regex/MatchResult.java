@@ -15,11 +15,22 @@ public class MatchResult {
     private boolean approximate;
 
     private int matchCost, insertCount, deleteCount, substitutionCount;
+    private byte[] inputBytes;
 
     public MatchResult(Regex regex, Match[] matchArray, boolean approximate) {
         this.regexParent = regex;
         this.matchArray = matchArray;
         this.approximate = approximate;
+    }
+
+    private String getInputRange(int start, int end) {
+        byte[] inputBytes = regexParent.getInput().getBytes();
+        byte[] outputBytes = new byte[end - start];
+        int bpos = 0;
+        for (int index = start; index < end; index++) {
+            outputBytes[bpos++] = inputBytes[index];
+        }
+        return new String(outputBytes);
     }
 
     /**
@@ -29,11 +40,11 @@ public class MatchResult {
      */
     public final List<String> groups() {
         List<String> groups = null;
-        if (regexParent != null && matchArray != null) {
+        if (matchArray != null) {
             groups = new ArrayList<>(matchArray.length);
             for (Match match : matchArray) {
                 if (match != null) {
-                    groups.add(regexParent.getInput().substring(match.getStartOffset(), match.getEndOffset()));
+                    groups.add(getInputRange(match.getStartOffset(), match.getEndOffset()));
                 }
             }
         }

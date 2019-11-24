@@ -16,6 +16,11 @@ jobject trej_regex_exec(JNIEnv *env, jobject object) {
 	trej_match->matchArray = nullptr;
 	trej_match->nmatch = 0;
 
+	trej_match->match_cost = 0;
+	trej_match->insert_count = 0;
+	trej_match->delete_count = 0;
+	trej_match->substitution_count = 0;
+
 	if(regex_class != nullptr && result_class != nullptr && match_class != nullptr) {
 		jfieldID preg_id = env->GetFieldID(regex_class, "preg", "J");
 		jfieldID input_id = env->GetFieldID(regex_class, "input", "Ljava/lang/String;");
@@ -27,16 +32,31 @@ jobject trej_regex_exec(JNIEnv *env, jobject object) {
 		if( (preg = reinterpret_cast<regex_t*>(env->GetLongField(object, preg_id))) != nullptr && 
 			(input = static_cast<jstring>(env->GetObjectField(object, input_id))) ) {
 				jint trej_error_value;
-				auto string = env->GetStringUTFChars(input, nullptr);
 				jboolean isApproximate;
 
-				if((isApproximate = tre_have_approx(preg)) == JNI_FALSE) {
-					trej_error_value = matchNotApprox(preg, string, 0, trej_match, 0);
-				} else {
-					trej_error_value = matchApprox(preg, string, 0, trej_match, 0);
+				auto mb_string = env->GetStringUTFChars(input, nullptr);
+				wchar_t* wc_string = nullptr;
+
+				if(hasWideChar(mb_string)) {
+					size_t newsize = strnlen(mb_string, TREJ_STR_MAX) + 1;
+					wc_string = new wchar_t[newsize];
+					size_t wc_string_len = 0;
+					mbstowcs_s(&wc_string_len, wc_string, newsize, mb_string, _TRUNCATE);
 				}
 
-				env->ReleaseStringUTFChars(input, string);
+				if((isApproximate = tre_have_approx(preg)) == JNI_FALSE) {
+					trej_error_value = (wc_string == nullptr) ? 
+						matchNotApprox(preg, mb_string, 0, trej_match, 0) : 
+						matchNotApprox(preg, wc_string, 0, trej_match, 0);
+				} else {
+					trej_error_value = matchApprox(preg, mb_string, 0, trej_match, 0);
+				}
+
+				env->ReleaseStringUTFChars(input, mb_string);
+
+
+
+
 				env->SetIntField(object, error_value_id, trej_error_value);
 				env->SetObjectField(object, error_message_id, env->NewStringUTF(trej_match->error_message));
 				delete[] trej_match->error_message;

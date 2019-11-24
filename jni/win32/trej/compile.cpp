@@ -19,13 +19,25 @@ jint trej_regex_compile(JNIEnv *env, jobject object) {
 		(pattern = static_cast<jstring>(env->GetObjectField(object, pattern_id))) ) {
 			regex_t *preg = new regex_t;
 			auto regex = env->GetStringUTFChars(pattern, nullptr);
-			error_value = tre_regcomp(preg, regex, REG_EXTENDED|cflags);
+
+			if(hasWideChar(regex)) {
+				size_t pattern_len = strnlen(regex, TREJ_STR_MAX) + 1;
+				wchar_t* wc_regex = new wchar_t[pattern_len];
+				size_t wc_regex_len = 0;
+				mbstowcs_s(&wc_regex_len, wc_regex, pattern_len, regex, _TRUNCATE);
+				error_value = tre_regwcomp(preg, wc_regex, REG_EXTENDED|cflags);
+			} else {
+				error_value = tre_regcomp(preg, regex, REG_EXTENDED|cflags);
+			}
+
 			env->ReleaseStringUTFChars(pattern, regex);
+
 			if(error_value == REG_OK) {
 				env->SetLongField(object, preg_id, reinterpret_cast<std::uintptr_t>(preg));
 			}
-			char *error_message = new char[MAXBYTE];
-			tre_regerror(error_value, preg, error_message, MAXBYTE);
+
+			char *error_message = new char[TREJ_ERR_MSG_LEN];
+			tre_regerror(error_value, preg, error_message, TREJ_ERR_MSG_LEN);
 			env->SetObjectField(object, error_message_id, env->NewStringUTF(error_message));
 			delete[] error_message;
 	}

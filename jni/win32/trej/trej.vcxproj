@@ -159,6 +159,7 @@
     <ClInclude Include="trej.h" />
     <ClInclude Include="tre\tre-config.h" />
     <ClInclude Include="tre\tre.h" />
+    <ClInclude Include="trej_functions.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="compile.cpp" />
@@ -185,6 +186,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="trej.cpp" />
+    <ClCompile Include="trej_functions.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         MatchResult result;
         try {
-            Regex regex = Regex.compile("^(test)([a-z]+)\\d{3}$", Regex.REG_ICASE);
+            Regex regex = Regex.compile("(test)([a-z]+)\\d{3}$", Regex.REG_ICASE);
             result = regex.exec("teststRing123");
             printResults(result);
             regex.free();
@@ -22,6 +22,20 @@ public class Main {
             // tast -> test
             // String -> string
             result = Regex.exec("{~2}(test)([a-z]+)\\d{3}$", "tastString123");
+            printResults(result);
+        } catch(RegexException ex) {
+            ex.printStackTrace();
+        }
+        
+        try {
+            result = Regex.exec("(test)([a-zA-Z]+)\\d{3}(À)$", "testString123À");
+            printResults(result);
+        } catch(RegexException ex) {
+            ex.printStackTrace();
+        }
+
+        try {
+            result = Regex.exec("{+1#1}(test)([a-z]+)\\d{3}(À)$", "tewstString123À");
             printResults(result);
         } catch(RegexException ex) {
             ex.printStackTrace();
