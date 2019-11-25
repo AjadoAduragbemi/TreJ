@@ -19,14 +19,14 @@ regmatch_t* create_regmatch(size_t nmatch) {
 	return pmatch;
 }
 
-void setUpMatchResult(trej_result_t* p_trej_match, regmatch_t* pmatch, size_t nmatch) {
+void setUpMatchResult(trej_result_t* p_trej_match, const regmatch_t* pmatch, size_t nmatch) {
 	if(p_trej_match != nullptr) {
 
 		p_trej_match->nmatch = 0;
 		p_trej_match->matchArray = new trej_match_t[nmatch];
 
 		for(int i = 0; i < nmatch; i++) {
-			regmatch_t* match = &pmatch[i];
+			const regmatch_t* match = &pmatch[i];
 			if(match->rm_so == -1 && match->rm_eo == -1) {
 				break;
 			}
@@ -83,6 +83,7 @@ int matchNotApprox<char>(const regex_t* preg, const char* string, size_t len, tr
 	return error_value;
 }
 
+template<> 
 int matchApprox(const regex_t* preg, const char* string, size_t len, trej_result_t* p_trej_match, int eflags) {
 	size_t nmatch = preg->re_nsub + 1;
 	regaparams_t aparams;
