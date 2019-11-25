@@ -42,12 +42,14 @@ int matchNotApprox<wchar_t>(const regex_t* preg, const wchar_t* string, size_t l
 	size_t nmatch = preg->re_nsub + 1;
 	regmatch_t* pmatch = create_regmatch(nmatch);
 
-	int error_value;
+	int error_value = 1;
+#if defined(TRE_WCHAR) && defined(HAVE_WCHAR_H)
 	if(len > 0) {
 		error_value = tre_regwnexec(preg, string, len, nmatch, pmatch, eflags);
 	} else {
 		error_value = tre_regwexec(preg, string, nmatch, pmatch, eflags);
 	}
+#endif
 
 	setUpMatchResult(p_trej_match, pmatch, nmatch);
 
@@ -110,7 +112,7 @@ int matchApprox(const regex_t* preg, const char* string, size_t len, trej_result
 		p_trej_match->delete_count = p_amatch->num_del;
 		p_trej_match->substitution_count = p_amatch->num_subst;
 	}
-	
+
 	delete[] p_amatch->pmatch;
 	p_amatch->pmatch = nullptr;
 	delete p_amatch;
@@ -119,6 +121,45 @@ int matchApprox(const regex_t* preg, const char* string, size_t len, trej_result
 	return error_value;
 }
 
+template<> 
+int matchApprox<wchar_t>(const regex_t* preg, const wchar_t* string, size_t len, trej_result_t* p_trej_match, int eflags) {
+	size_t nmatch = preg->re_nsub + 1;
+	regaparams_t aparams;
+	regamatch_t* p_amatch = new regamatch_t;
+
+	tre_regaparams_default(&aparams);
+
+	p_amatch->nmatch = nmatch;
+	p_amatch->pmatch = create_regmatch(nmatch);
+
+	int error_value = 1;
+#if defined(TRE_WCHAR) && defined(HAVE_WCHAR_H)
+	if(len > 0) {
+		error_value = tre_regawnexec(preg, string, len, p_amatch, aparams, eflags);
+	} else {
+		error_value = tre_regawexec(preg, string, p_amatch, aparams, eflags);
+	}
+#endif
+
+	setUpMatchResult(p_trej_match, p_amatch->pmatch, nmatch);
+
+	p_trej_match->error_message = new char[TREJ_ERR_MSG_LEN];
+	tre_regerror(error_value, preg, p_trej_match->error_message, TREJ_ERR_MSG_LEN);
+
+	if(error_value == REG_OK) {
+		p_trej_match->match_cost = p_amatch->cost;
+		p_trej_match->insert_count = p_amatch->num_ins;
+		p_trej_match->delete_count = p_amatch->num_del;
+		p_trej_match->substitution_count = p_amatch->num_subst;
+	}
+
+	delete[] p_amatch->pmatch;
+	p_amatch->pmatch = nullptr;
+	delete p_amatch;
+	p_amatch = nullptr;	// doesn't do no harm
+
+	return error_value;
+}
 
 
 TREJ_API int trejMatch(const char* pattern, const char* string, trej_result_t* p_trej_match, int cflags, int eflags) {

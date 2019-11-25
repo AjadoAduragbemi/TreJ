@@ -20,15 +20,20 @@ jint trej_regex_compile(JNIEnv *env, jobject object) {
 			regex_t *preg = new regex_t;
 			auto regex = env->GetStringUTFChars(pattern, nullptr);
 
+#if defined(TRE_WCHAR) && defined(HAVE_WCHAR_H)
 			if(hasWideChar(regex)) {
 				size_t pattern_len = strnlen(regex, TREJ_STR_MAX) + 1;
 				wchar_t* wc_regex = new wchar_t[pattern_len];
 				size_t wc_regex_len = 0;
 				mbstowcs_s(&wc_regex_len, wc_regex, pattern_len, regex, _TRUNCATE);
 				error_value = tre_regwcomp(preg, wc_regex, REG_EXTENDED|cflags);
+				delete[] wc_regex;
 			} else {
+#endif
 				error_value = tre_regcomp(preg, regex, REG_EXTENDED|cflags);
+#if defined(TRE_WCHAR) && defined(HAVE_WCHAR_H)
 			}
+#endif
 
 			env->ReleaseStringUTFChars(pattern, regex);
 

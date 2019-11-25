@@ -36,26 +36,28 @@ jobject trej_regex_exec(JNIEnv *env, jobject object) {
 
 				auto mb_string = env->GetStringUTFChars(input, nullptr);
 				wchar_t* wc_string = nullptr;
-
+#if defined(TRE_WCHAR) && defined(HAVE_WCHAR_H)
 				if(hasWideChar(mb_string)) {
 					size_t newsize = strnlen(mb_string, TREJ_STR_MAX) + 1;
 					wc_string = new wchar_t[newsize];
 					size_t wc_string_len = 0;
 					mbstowcs_s(&wc_string_len, wc_string, newsize, mb_string, _TRUNCATE);
 				}
-
+#endif
 				if((isApproximate = tre_have_approx(preg)) == JNI_FALSE) {
 					trej_error_value = (wc_string == nullptr) ? 
 						matchNotApprox(preg, mb_string, 0, trej_match, 0) : 
 						matchNotApprox(preg, wc_string, 0, trej_match, 0);
 				} else {
-					trej_error_value = matchApprox(preg, mb_string, 0, trej_match, 0);
+					trej_error_value = (wc_string == nullptr) ? 
+						matchApprox(preg, mb_string, 0, trej_match, 0) :
+						matchApprox(preg, wc_string, 0, trej_match, 0);
 				}
 
 				env->ReleaseStringUTFChars(input, mb_string);
-
-
-
+				if(wc_string != nullptr) {
+					delete[] wc_string;
+				}
 
 				env->SetIntField(object, error_value_id, trej_error_value);
 				env->SetObjectField(object, error_message_id, env->NewStringUTF(trej_match->error_message));

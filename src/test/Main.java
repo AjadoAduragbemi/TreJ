@@ -28,14 +28,14 @@ public class Main {
         }
         
         try {
-            result = Regex.exec("(test)([a-zA-Z]+)\\d{3}(À)$", "testString123À");
+            result = Regex.exec("(test)([a-zA-Z]+)\\d{3}([\u00D0-\u00F0]+)$", "testString123ààÑ");
             printResults(result);
         } catch(RegexException ex) {
             ex.printStackTrace();
         }
 
         try {
-            result = Regex.exec("{+1#1}(test)([a-z]+)\\d{3}(À)$", "tewstString123À");
+            result = Regex.exec("{+1#1}(test)([a-z]+)\\d{3}([ÑîṩąÀ]{10,12})$", "tewstString123ÀÑîąṩ");
             printResults(result);
         } catch(RegexException ex) {
             ex.printStackTrace();
